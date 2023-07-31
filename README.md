@@ -1,2 +1,3 @@
-# nest-user-auth
-A User Authentication System developed using NestJS framework
+Nest User Auth
+
+An Authentication Layer for a Web Service
