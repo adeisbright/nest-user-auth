@@ -8,8 +8,20 @@ export class UserController {
         private userService : UserService
     ) { }
     
+    @Get()
+    async getUsers() {
+        const user = await this.userService.getAll()
+       
+        return {
+            message: "Users retrieved",
+            success: true,
+            data: user,
+            statusCode : HttpStatus.OK
+        }
+    }
+
     @Get(":id")
-    async getUsers(
+    async getUser(
         @Param("id") id : string
     ) {
         const user = await this.userService.get(id)

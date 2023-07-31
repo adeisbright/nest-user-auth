@@ -8,6 +8,17 @@ export class UserService {
     constructor() { }
     
     async get(id: string) : Promise<IUser | unknown> {
-        return  this.people.find((user) => user._id === id )
+        return  this.people.find((user) => String(user._id) === id )
+    }
+
+    async getAll() : Promise<IUser[]> {
+        return  this.people
+    }
+
+    async create(data : IUser) {
+        const id = `${Date.now()}` 
+        data._id = id 
+        return this.people.push(data) 
+
     }
 }
