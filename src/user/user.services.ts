@@ -21,4 +21,8 @@ export class UserService {
         return this.people.push(data) 
 
     }
+
+    async login(email : string , password : string)  {
+       return this.people.find((user) => user.email === email && user.password === password)
+    }
 }
