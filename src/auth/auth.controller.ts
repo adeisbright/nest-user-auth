@@ -3,6 +3,7 @@ import { ValidateUserPipe } from "src/common/middleware/validate-user-body";
 import { UserDTO } from "src/user/user.dto";
 import { UserService } from "src/user/user.services";
 import { AuthService } from "./auth.service";
+import { PUBLIC } from "./anon";
 
 @Controller("auth")
 
@@ -29,6 +30,7 @@ export class AuthController {
         }
     }
 
+    @PUBLIC()
     @Post("login")
     async handleLogin(
         @Body() body : Record<string,any>
