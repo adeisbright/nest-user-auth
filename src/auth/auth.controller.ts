@@ -1,4 +1,12 @@
-import { Controller, Post, UsePipes , Body, InternalServerErrorException, HttpStatus, UnauthorizedException } from "@nestjs/common";
+import {
+    Controller,
+    Post,
+    UsePipes,
+    Body,
+    InternalServerErrorException,
+    HttpStatus,
+    UnauthorizedException
+} from "@nestjs/common";
 import { ValidateUserPipe } from "src/common/middleware/validate-user-body";
 import { UserDTO } from "src/user/user.dto";
 import { UserService } from "src/user/user.services";
