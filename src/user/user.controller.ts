@@ -1,5 +1,6 @@
-import { Controller , Get, HttpStatus, NotFoundException, Param} from "@nestjs/common";
+import { Controller , Get, HttpStatus, NotFoundException, Param, UseGuards} from "@nestjs/common";
 import { UserService } from "./user.services";
+import { AuthGuard } from "src/auth/auth.guard";
 
 @Controller("users") 
 
@@ -20,6 +21,7 @@ export class UserController {
         }
     }
 
+    @UseGuards(AuthGuard)
     @Get(":id")
     async getUser(
         @Param("id") id : string
