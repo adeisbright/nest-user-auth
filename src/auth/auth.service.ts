@@ -13,7 +13,7 @@ export class AuthService {
     ) { }
     
     async generateAuthToken(email: string,userPassword : string ) {
-        const user = await this.userService.login(email) 
+        const user = await this.userService.findByEmail(email) 
         if (!user) {
             return {
                 error: true, 
@@ -32,7 +32,7 @@ export class AuthService {
         }
 
         const payload = {
-            sub: user._id, 
+            sub: user.id, 
             name : user.username
         }
 
