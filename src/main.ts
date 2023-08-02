@@ -8,5 +8,5 @@ async function bootstrap() {
   app.useGlobalFilters(new GlobalErrorFilter())
   await app.listen(3000);
 
-}
+} 
 bootstrap();

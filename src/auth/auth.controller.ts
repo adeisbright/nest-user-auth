@@ -4,6 +4,7 @@ import { UserDTO } from "src/user/user.dto";
 import { UserService } from "src/user/user.services";
 import { AuthService } from "./auth.service";
 import { PUBLIC } from "./anon";
+import * as bcrypt from "bcrypt" 
 
 @Controller("auth")
 
@@ -13,11 +14,17 @@ export class AuthController {
         private authService : AuthService
     ) { } 
 
+    @PUBLIC() 
     @Post("/sign-up")
     @UsePipes(ValidateUserPipe)
     async handleRegistration(
         @Body() body : UserDTO
     ) {
+        const { password } = body 
+        const salt = await bcrypt.genSalt() 
+        const hashPassword = await bcrypt.hash(password, salt) 
+        
+        body.password = hashPassword 
         const user = await this.userService.create(body) 
         if (!user) {
             throw new InternalServerErrorException("Server Error")
@@ -26,7 +33,7 @@ export class AuthController {
             data: user,
             success: true,
             message: "Registration Successful", 
-            statusCode : HttpStatus.CREATED
+            statusCode: HttpStatus.CREATED
         }
     }
 
