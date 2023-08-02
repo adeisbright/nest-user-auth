@@ -43,7 +43,7 @@ export class AuthController {
         @Body() body : Record<string,any>
     ) {
         const {email , password} = body 
-        const user = await this.authService.generateAuthToken(email, password)
+        const user = await this.authService.generateAuthToken(email , password)
         if (user.error) {
             throw new UnauthorizedException("Invalid Credentials")
         }
