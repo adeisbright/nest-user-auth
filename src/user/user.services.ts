@@ -22,7 +22,7 @@ export class UserService {
 
     }
 
-    async login(email : string , password : string)  {
-       return this.people.find((user) => user.email === email && user.password === password)
+    async login(email : string)  {
+       return this.people.find((user) => user.email === email)
     }
 }

@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { UserService } from "src/user/user.services";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
-
+import* as  bcrypt from "bcrypt"
 
 @Injectable() 
 export class AuthService {
@@ -12,22 +12,25 @@ export class AuthService {
         private configService : ConfigService
     ) { }
     
-    async generateAuthToken(
-        email: string,
-        passwords : string 
-    ) {
-        const user = await this.userService.login(email, passwords) 
+    async generateAuthToken(email: string,userPassword : string ) {
+        const user = await this.userService.login(email) 
         if (!user) {
             return {
                 error: true, 
-                message: "User not found",
-                data: {
-                    profile: "", 
-                    token : ""
-                }
+                message: "Invalid Login Credentials"
             }
         }
-        const {password , ...profile} = user
+
+        const { password, ...profile } = user 
+        
+        const CORRECT_PASSWORD  = await bcrypt.compare(userPassword, password) 
+        if (!CORRECT_PASSWORD) {
+             return {
+                error: true, 
+                message: "Invalid Login Credentials"
+            }
+        }
+
         const payload = {
             sub: user._id, 
             name : user.username
