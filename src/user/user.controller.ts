@@ -1,5 +1,7 @@
-import { Controller , Get, HttpStatus, NotFoundException, Param} from "@nestjs/common";
+import { Controller , Get, HttpStatus, NotFoundException, Param, UseGuards} from "@nestjs/common";
 import { UserService } from "./user.services";
+import { AuthGuard } from "src/auth/auth.guard";
+import { PUBLIC } from "src/auth/anon";
 
 @Controller("users") 
 
@@ -8,6 +10,7 @@ export class UserController {
         private userService : UserService
     ) { }
     
+    @PUBLIC()
     @Get()
     async getUsers() {
         const user = await this.userService.getAll()
@@ -20,6 +23,7 @@ export class UserController {
         }
     }
 
+    @UseGuards(AuthGuard)
     @Get(":id")
     async getUser(
         @Param("id") id : string
