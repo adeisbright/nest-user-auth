@@ -5,7 +5,8 @@ import {
     Body,
     InternalServerErrorException,
     HttpStatus,
-    UnauthorizedException
+    UnauthorizedException,
+    BadRequestException
 } from "@nestjs/common";
 import { ValidateUserPipe } from "src/common/middleware/validate-user-body";
 import { UserDTO } from "src/user/user.dto";
@@ -28,12 +29,17 @@ export class AuthController {
     async handleRegistration(
         @Body() body : UserDTO
     ) {
-        const { password } = body 
+        const { password, email } = body  
+        
+        const isUser = await this.userService.findByEmail(email) 
+        if (isUser) {
+            throw new BadRequestException("A user with the email you provided already exists")
+        }
         const salt = await bcrypt.genSalt() 
         const hashPassword = await bcrypt.hash(password, salt) 
         
         body.password = hashPassword 
-        const user = await this.userService.create(body) 
+        const user = await this.userService.save(body) 
         if (!user) {
             throw new InternalServerErrorException("Server Error")
         }

@@ -1,4 +1,4 @@
-import { Controller , Get, HttpStatus, NotFoundException, Param, UseGuards} from "@nestjs/common";
+import { Controller , Get, HttpStatus, NotFoundException, Param, ParseIntPipe, UseGuards} from "@nestjs/common";
 import { UserService } from "./user.services";
 import { AuthGuard } from "src/auth/auth.guard";
 import { PUBLIC } from "src/auth/anon";
@@ -26,12 +26,13 @@ export class UserController {
     @UseGuards(AuthGuard)
     @Get(":id")
     async getUser(
-        @Param("id") id : string
+        @Param("id" , ParseIntPipe) id : number 
     ) {
         const user = await this.userService.get(id)
         if (!user) {
             throw new NotFoundException(`User with ${id} not found`)
         }
+        
         return {
             message: "Your information was retrieved successful",
             success: true,
