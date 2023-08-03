@@ -1,16 +1,19 @@
-import { CanActivate, ExecutionContext , Injectable, UnauthorizedException } from "@nestjs/common";
+import { CanActivate, ExecutionContext , Injectable, UnauthorizedException , Inject } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
 import { Request } from "express";
 import { IS_ANON_KEY } from "./anon";
 import { ConfigService } from "@nestjs/config";
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
+import { Cache } from "cache-manager";
 
 @Injectable() 
 export class AuthGuard implements CanActivate {
     constructor(
         private jwtService: JwtService, 
         private reflector: Reflector, 
-        private configService : ConfigService
+        private configService: ConfigService, 
+         @Inject(CACHE_MANAGER)private cacheManager: Cache, 
     ) { }
     async canActivate(context: ExecutionContext): Promise<boolean>{
 
@@ -23,9 +26,16 @@ export class AuthGuard implements CanActivate {
         const request = context.switchToHttp().getRequest() 
         const token = this.extractTokenFromHeader(request) 
 
+       
         if (!token) {
             throw new UnauthorizedException("Provide authorization token")
         }
+
+        const cacheKey = `blacklist:${token}`
+        const isBlackListedToken = await this.cacheManager.get(cacheKey) 
+        if (isBlackListedToken) {
+            throw new UnauthorizedException("Session Expired : Login Again")
+        } 
 
         try {
             const payload = await this.jwtService.verifyAsync(token, {
