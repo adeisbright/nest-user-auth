@@ -8,6 +8,7 @@ import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard } from "./auth.guard";
 import config from "src/config";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { CacheModule } from "@nestjs/cache-manager";
 
 
 @Module({
@@ -18,7 +19,8 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
         }), 
         ConfigModule.forRoot({
             load : [config]
-        })
+        }), 
+        CacheModule.register()
     ],
     providers: [
         UserService,

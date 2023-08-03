@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import config from './config'; 
+import { CacheModule } from '@nestjs/cache-manager';
 
 const {database : {databaseName , port , username , password , host }} = config()
 @Module({
@@ -12,7 +13,7 @@ const {database : {databaseName , port , username , password , host }} = config(
     UserModule, 
     AuthModule, 
     TypeOrmModule.forRoot({
-      type: "mysql",
+      type: "postgres",
       host,
       username,
       password,
@@ -20,7 +21,8 @@ const {database : {databaseName , port , username , password , host }} = config(
       port,
       autoLoadEntities: true, 
       synchronize : true 
-    })
+    }), 
+    CacheModule.register()
   ],
   controllers: [AppController],
   providers: [AppService],
